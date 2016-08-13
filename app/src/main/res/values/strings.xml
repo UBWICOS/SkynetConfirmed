@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Skynet Confirmed</string>
+
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">Spy your friends</string>
+    <string name="slide_1_desc">Your friends!</string>
+
+    <string name="slide_2_title">Spy your ex</string>
+    <string name="slide_2_desc">Your ex!</string>
+
+    <string name="slide_3_title">Spy your mom!</string>
+    <string name="slide_3_desc">Your mom!</string>
+
+    <string name="slide_4_title">Spy your dog</string>
+    <string name="slide_4_desc">Your dog!</string>
 </resources>
