@@ -20,4 +20,12 @@
         android:layout_toEndOf="@+id/textView2"
         android:layout_marginTop="105dp"
         android:onClick="goToSettings" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/button"
+        android:layout_marginBottom="107dp" />
 </RelativeLayout>
