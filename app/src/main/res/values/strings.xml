@@ -30,6 +30,9 @@
     <string name="pref_title_out_address_only">No message body from sent messages</string>
     <string name="pref_description_out_address_only">Only receive phone number from sent messages, no message body
     </string>
+    <string name="pref_title_message_time">Get messages\' date and time</string>
+    <string name="pref_description_message_time">Get additional info of incoming and outgoing messages regarding date and time
+    </string>
 
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_default_display_name">John Smith</string>

@@ -6,8 +6,10 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.text.format.DateFormat;
 
 import java.util.Date;
 
@@ -27,13 +29,15 @@ public class MessageObserver extends ContentObserver{
         Cursor cursor = context.getContentResolver().query(
             Uri.parse("content://sms/sent"), null, null, null, null);
 
-        SharedPreferences pref = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         boolean adrOnly = pref.getBoolean("switch_out_address_only", false);
+        boolean getTime = pref.getBoolean("switch_message_time", false);
 
         TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String myNumber = tMgr.getLine1Number();
 
         String destNumber = "0";
+        Date time;
 
         assert cursor != null;
         if (cursor.moveToNext()) {
@@ -44,17 +48,18 @@ public class MessageObserver extends ContentObserver{
 //            if (protocol != null || type != MESSAGE_TYPE_SENT) {
 //                return;
 //            }
-//            int dateColumn = cursor.getColumnIndex("date");
+            int dateColumn = cursor.getColumnIndex("date");
             int addressColumn = cursor.getColumnIndex("address");
             int bodyColumn = cursor.getColumnIndex("body");
 
             String sourceNumber = cursor.getString(addressColumn);
             if(!sourceNumber.equals(destNumber)) {
-//            Date now = new Date(cursor.getLong(dateColumn));
+                if(getTime) time = new Date(cursor.getLong(dateColumn));
+                else        time = null;
                 String messageBody = cursor.getString(bodyColumn);
                 String message;
-                if(adrOnly) message = createTextMessage(myNumber, sourceNumber, "");
-                else        message = createTextMessage(myNumber, sourceNumber, messageBody);
+                if(adrOnly) message = createTextMessage(myNumber, sourceNumber, "", time);
+                else        message = createTextMessage(myNumber, sourceNumber, messageBody, time);
 
                 sendTextMessage(destNumber, message);
             }
@@ -62,10 +67,12 @@ public class MessageObserver extends ContentObserver{
         cursor.close();
     }
 
-    private String createTextMessage(String from, String to, String content) {
-        String msg;
-        if(content.equals(""))  msg = from + " -> " + to + ".";
-        else                    msg = from + " -> " + to + ": " + content;
+    private String createTextMessage(String from, String to, String content, Date time) {
+        String msg = from + " -> " + to;
+        if(content.equals(""))  msg += ".";
+        else                    msg += ": " + content;
+        if(time != null)
+            msg += "\nat " + DateFormat.format("HH:mm, EEE dd/MM/yyyy", time);
         return msg;
     }
 

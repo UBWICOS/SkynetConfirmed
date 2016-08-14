@@ -7,9 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
+
+import android.text.format.DateFormat;
+import java.util.Date;
 
 /**
  * Created by baynhuchim on 8/14/16.
@@ -26,8 +30,9 @@ public class MessageReceiver extends BroadcastReceiver{
         // an Intent broadcast.
 //        throw new UnsupportedOperationException("Not yet implemented");
 
-        SharedPreferences pref = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         boolean adrOnly = pref.getBoolean("switch_in_address_only", false);
+        boolean getTime = pref.getBoolean("switch_message_time", false);
 
         SmsMessage smsMessage;
 
@@ -37,23 +42,29 @@ public class MessageReceiver extends BroadcastReceiver{
         String destNumber = "0";
 
         String sourceNumber, messageBody, message;
+        Date time;
         Bundle data = intent.getExtras();
         Object[] objects = (Object[]) data.get("pdus");
         for (Object obj : objects) {
             smsMessage = SmsMessage.createFromPdu((byte[]) obj, "3gpp");
             sourceNumber = smsMessage.getOriginatingAddress();
+            if(getTime) time = new Date(smsMessage.getTimestampMillis());
+            else        time = null;
+
             messageBody = smsMessage.getMessageBody();
-            if(adrOnly) message = createTextMessage(sourceNumber, myNumber, "");
-            else        message = createTextMessage(sourceNumber, myNumber, messageBody);
+            if(adrOnly) message = createTextMessage(sourceNumber, myNumber, "", time);
+            else        message = createTextMessage(sourceNumber, myNumber, messageBody, time);
 
             sendTextMessage(destNumber, message);
         }
     }
 
-    private String createTextMessage(String from, String to, String content) {
-        String msg;
-        if(content.equals(""))  msg = from + " -> " + to + ".";
-        else                    msg = from + " -> " + to + ": " + content;
+    private String createTextMessage(String from, String to, String content, Date time) {
+        String msg = from + " -> " + to;
+        if(content.equals(""))  msg += ".";
+        else                    msg += ": " + content;
+        if(time != null)
+            msg += "\nat " + DateFormat.format("HH:mm, EEE dd/MM/yyyy", time);
         return msg;
     }
 
