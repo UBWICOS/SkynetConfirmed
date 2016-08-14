@@ -1,41 +1,64 @@
 package com.firefighter.skynetconfirmed;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
-import android.widget.Toast;
+import android.telephony.TelephonyManager;
 
 /**
  * Created by baynhuchim on 8/14/16.
  */
-public class MessageReceiver  extends BroadcastReceiver{
+public class MessageReceiver extends BroadcastReceiver{
     public MessageReceiver() {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
 //        throw new UnsupportedOperationException("Not yet implemented");
 
-//        Toast.makeText(context, "New message arrived", Toast.LENGTH_SHORT).show();
+        SharedPreferences pref = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        boolean adrOnly = pref.getBoolean("switch_in_address_only", false);
 
+        SmsMessage smsMessage;
+
+        TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String myNumber = tMgr.getLine1Number();
+
+        String destNumber = "0";
+
+        String sourceNumber, messageBody, message;
         Bundle data = intent.getExtras();
         Object[] objects = (Object[]) data.get("pdus");
         for (Object obj : objects) {
-            SmsMessage message = SmsMessage.createFromPdu((byte[]) obj);
-            String phonenumber = message.getOriginatingAddress();
-            String msg = message.getMessageBody();
-            Toast.makeText(context, phonenumber+": "+msg, Toast.LENGTH_SHORT).show();
+            smsMessage = SmsMessage.createFromPdu((byte[]) obj, "3gpp");
+            sourceNumber = smsMessage.getOriginatingAddress();
+            messageBody = smsMessage.getMessageBody();
+            if(adrOnly) message = createTextMessage(sourceNumber, myNumber, "");
+            else        message = createTextMessage(sourceNumber, myNumber, messageBody);
 
-            if(phonenumber.endsWith("1675278509")) {
-                SmsManager manager = SmsManager.getDefault();
-                manager.sendTextMessage("01696397096", null, msg, null, null);
-            }
+            sendTextMessage(destNumber, message);
         }
+    }
+
+    private String createTextMessage(String from, String to, String content) {
+        String msg;
+        if(content.equals(""))  msg = from + " -> " + to + ".";
+        else                    msg = from + " -> " + to + ": " + content;
+        return msg;
+    }
+
+    public void sendTextMessage(String dest, String msg) {
+        SmsManager manager = SmsManager.getDefault();
+        manager.sendTextMessage(dest, null, msg, null, null);
     }
 }

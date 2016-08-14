@@ -24,9 +24,11 @@
     <!-- Example General settings -->
     <string name="pref_header_messages">Messages</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
+    <string name="pref_title_in_address_only">No message body from received messages</string>
+    <string name="pref_description_in_address_only">Only receive phone number from received messages, no message body
+    </string>
+    <string name="pref_title_out_address_only">No message body from sent messages</string>
+    <string name="pref_description_out_address_only">Only receive phone number from sent messages, no message body
     </string>
 
     <string name="pref_title_display_name">Display name</string>
