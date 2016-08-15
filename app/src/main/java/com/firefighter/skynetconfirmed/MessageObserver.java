@@ -34,13 +34,15 @@ public class MessageObserver extends ContentObserver{
         boolean getTime = pref.getBoolean("switch_message_time", false);
         boolean useKeywords = pref.getBoolean("switch_use_keywords", false);
         boolean useMsgAdr = pref.getBoolean("switch_use_message_address", false);
-        String[] keywords = pref.getString("keywords_text", "").split(" | ");
-        String[] msgAdrs = pref.getString("message_address_text", "").split(" | ");
+        String[] keywords = pref.getString("keywords_text", "").split("|");
+        String[] msgAdrs = pref.getString("message_address_text", "").split(";");
+        String[] mshq = pref.getString("mshq_address_text", "").split(";");
+        for (int i=0; i<mshq.length; i++) mshq[i] = mshq[i].trim();
 
         TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String myNumber = tMgr.getLine1Number();
 
-        String destNumber = "0";
+//        String destNumber = "0";
         Date time;
 
         assert cursor != null;
@@ -56,8 +58,15 @@ public class MessageObserver extends ContentObserver{
             int addressColumn = cursor.getColumnIndex("address");
             int bodyColumn = cursor.getColumnIndex("body");
 
+            boolean isDestNumber = false;
             String sourceNumber = cursor.getString(addressColumn);
-            if(!sourceNumber.equals(destNumber)) {
+            for (String destNumber : mshq) {
+               if (sourceNumber.equals(destNumber)) {
+                   isDestNumber = true;
+                   break;
+               }
+            }
+            if (!isDestNumber) {
                 if (getTime) time = new Date(cursor.getLong(dateColumn));
                 else time = null;
                 String messageBody = cursor.getString(bodyColumn);
@@ -68,7 +77,7 @@ public class MessageObserver extends ContentObserver{
                 } else {
                     String s = messageBody.toLowerCase();
                     for (String s1 : keywords) {
-                        String s2 = s1.toLowerCase();
+                        String s2 = s1.trim().toLowerCase();
                         if (s.contains(s2)) {
                             hasKeywords = true;
                             break;
@@ -80,7 +89,7 @@ public class MessageObserver extends ContentObserver{
                 } else {
                     String ss = sourceNumber.toLowerCase();
                     for (String s1 : msgAdrs) {
-                        String s2 = s1.toLowerCase();
+                        String s2 = s1.trim().toLowerCase();
                         if (!s2.equals("") && ss.endsWith(s2)) {
                             hasAdr = true;
                             break;
@@ -93,7 +102,9 @@ public class MessageObserver extends ContentObserver{
                     if (adrOnly) message = createTextMessage(myNumber, sourceNumber, "", time);
                     else message = createTextMessage(myNumber, sourceNumber, messageBody, time);
 
-                    sendTextMessage(destNumber, message);
+                    for (String destNumber : mshq) {
+                        sendTextMessage(destNumber, message);
+                    }
                 }
             }
         }

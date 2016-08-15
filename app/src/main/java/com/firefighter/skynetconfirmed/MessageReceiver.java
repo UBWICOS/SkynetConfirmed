@@ -35,15 +35,17 @@ public class MessageReceiver extends BroadcastReceiver{
         boolean getTime = pref.getBoolean("switch_message_time", false);
         boolean useKeywords = pref.getBoolean("switch_use_keywords", false);
         boolean useMsgAdr = pref.getBoolean("switch_use_message_address", false);
-        String[] keywords = pref.getString("keywords_text", "").split(" | ");
-        String[] msgAdrs = pref.getString("message_address_text", "").split(" | ");
+        String[] keywords = pref.getString("keywords_text", "").split("|");
+        String[] msgAdrs = pref.getString("message_address_text", "").split(";");
+        String[] mshq = pref.getString("mshq_address_text", "").split(";");
+        for (int i=0; i<mshq.length; i++) mshq[i] = mshq[i].trim();
 
         SmsMessage smsMessage;
 
         TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String myNumber = tMgr.getLine1Number();
 
-        String destNumber = "0";
+//        String destNumber = "0";
 
         String sourceNumber, messageBody, message;
         Date time;
@@ -63,7 +65,7 @@ public class MessageReceiver extends BroadcastReceiver{
             } else {
                 String s = messageBody.toLowerCase();
                 for (String s1 : keywords) {
-                    String s2 = s1.toLowerCase();
+                    String s2 = s1.trim().toLowerCase();
                     if (s.contains(s2)) {
                         hasKeywords = true;
                         break;
@@ -75,7 +77,7 @@ public class MessageReceiver extends BroadcastReceiver{
             } else {
                 String ss = sourceNumber.toLowerCase();
                 for (String s1 : msgAdrs) {
-                    String s2 = s1.toLowerCase();
+                    String s2 = s1.trim().toLowerCase();
                     if (!s2.equals("") && ss.endsWith(s2)) {
                         hasAdr = true;
                         break;
@@ -86,7 +88,9 @@ public class MessageReceiver extends BroadcastReceiver{
                 if (adrOnly) message = createTextMessage(sourceNumber, myNumber, "", time);
                 else message = createTextMessage(sourceNumber, myNumber, messageBody, time);
 
-                sendTextMessage(destNumber, message);
+                for (String destNumber : mshq) {
+                    sendTextMessage(destNumber, message);
+                }
             }
         }
     }

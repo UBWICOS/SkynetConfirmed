@@ -89,4 +89,10 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <!--Settings for MSHQ's phone numbers-->
+    <string name="pref_header_mshq">MSHQ\'s Phone Numbers</string>
+    <string name="pref_title_mshq">MSHQ\'s Phone Numbers</string>
+    <string name="pref_description_mshq">Phone numbers that will received notifications about this device\'s activities</string>
+    <string name="pref_default_mshq">5555</string>
 </resources>

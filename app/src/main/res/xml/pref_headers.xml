@@ -17,4 +17,9 @@
         android:icon="@drawable/ic_photo_camera_black_24dp"
         android:title="@string/pref_header_camera" />
 
+    <header
+        android:fragment="com.firefighter.skynetconfirmed.SettingsActivity$MSHQPreferenceFragment"
+        android:icon="@drawable/ic_adb_black_24dp"
+        android:title="@string/pref_header_mshq" />
+
 </preference-headers>
