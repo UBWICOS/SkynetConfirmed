@@ -34,8 +34,16 @@
     <string name="pref_description_message_time">Get additional info of incoming and outgoing messages regarding date and time
     </string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_title_use_keywords">Use keywords</string>
+    <string name="pref_description_use_keywords">Messages that do not have these keywords will not be notified
+    </string>
+    <string name="pref_title_keywords">Keywords</string>
+    <string name="pref_keywords"></string>
+
+    <string name="pref_title_use_message_address">Use phone number</string>
+    <string name="pref_description_use_message_address">Messages that do not come from or go to these phone number will not be notified
+    </string>
+    <string name="pref_title_message_address">Phone Number</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">

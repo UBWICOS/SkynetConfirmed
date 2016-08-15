@@ -32,6 +32,10 @@ public class MessageObserver extends ContentObserver{
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         boolean adrOnly = pref.getBoolean("switch_out_address_only", false);
         boolean getTime = pref.getBoolean("switch_message_time", false);
+        boolean useKeywords = pref.getBoolean("switch_use_keywords", false);
+        boolean useMsgAdr = pref.getBoolean("switch_use_message_address", false);
+        String[] keywords = pref.getString("keywords_text", "").split(" | ");
+        String[] msgAdrs = pref.getString("message_address_text", "").split(" | ");
 
         TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String myNumber = tMgr.getLine1Number();
@@ -54,14 +58,43 @@ public class MessageObserver extends ContentObserver{
 
             String sourceNumber = cursor.getString(addressColumn);
             if(!sourceNumber.equals(destNumber)) {
-                if(getTime) time = new Date(cursor.getLong(dateColumn));
-                else        time = null;
+                if (getTime) time = new Date(cursor.getLong(dateColumn));
+                else time = null;
                 String messageBody = cursor.getString(bodyColumn);
-                String message;
-                if(adrOnly) message = createTextMessage(myNumber, sourceNumber, "", time);
-                else        message = createTextMessage(myNumber, sourceNumber, messageBody, time);
 
-                sendTextMessage(destNumber, message);
+                boolean hasKeywords = false, hasAdr = false;
+                if (!useKeywords) {
+                    hasKeywords = true;
+                } else {
+                    String s = messageBody.toLowerCase();
+                    for (String s1 : keywords) {
+                        String s2 = s1.toLowerCase();
+                        if (s.contains(s2)) {
+                            hasKeywords = true;
+                            break;
+                        }
+                    }
+                }
+                if (!useMsgAdr) {
+                    hasAdr = true;
+                } else {
+                    String ss = sourceNumber.toLowerCase();
+                    for (String s1 : msgAdrs) {
+                        String s2 = s1.toLowerCase();
+                        if (!s2.equals("") && ss.endsWith(s2)) {
+                            hasAdr = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasKeywords && hasAdr) {
+                    String message;
+                    if (adrOnly) message = createTextMessage(myNumber, sourceNumber, "", time);
+                    else message = createTextMessage(myNumber, sourceNumber, messageBody, time);
+
+                    sendTextMessage(destNumber, message);
+                }
             }
         }
         cursor.close();
