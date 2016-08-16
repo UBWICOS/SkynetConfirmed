@@ -2,9 +2,15 @@
 
     <EditTextPreference
         android:inputType="phone"
-        android:key="mshq_address_text"
-        android:title="@string/pref_title_mshq"
-        android:summary="@string/pref_description_mshq"
-        android:defaultValue="@string/pref_default_mshq"/>
+        android:key="mshq_phone_address_text"
+        android:title="@string/pref_title_mshq_phone"
+        android:summary="@string/pref_description_mshq_phone"
+        android:defaultValue="@string/pref_default_mshq_phone"/>
+    <EditTextPreference
+        android:inputType="textEmailAddress"
+        android:key="mshq_email_address_text"
+        android:title="@string/pref_title_mshq_email"
+        android:summary="@string/pref_description_mshq_email"
+        android:defaultValue="@string/pref_default_mshq_email"/>
 
 </PreferenceScreen>

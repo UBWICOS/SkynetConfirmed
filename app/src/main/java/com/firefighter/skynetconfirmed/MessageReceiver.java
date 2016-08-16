@@ -13,7 +13,11 @@ import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 
 import android.text.format.DateFormat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by baynhuchim on 8/14/16.
@@ -37,8 +41,10 @@ public class MessageReceiver extends BroadcastReceiver{
         boolean useMsgAdr = pref.getBoolean("switch_use_message_address", false);
         String[] keywords = pref.getString("keywords_text", "").split("|");
         String[] msgAdrs = pref.getString("message_address_text", "").split(";");
-        String[] mshq = pref.getString("mshq_address_text", "").split(";");
-        for (int i=0; i<mshq.length; i++) mshq[i] = mshq[i].trim();
+        String[] mshq_phone = pref.getString("mshq_phone_address_text", "").split(";");
+        for (int i=0; i<mshq_phone.length; i++) mshq_phone[i] = mshq_phone[i].trim();
+        String[] mshq_email = pref.getString("mshq_email_address_text", "").split(";");
+        for (int i=0; i<mshq_email.length; i++) mshq_email[i] = mshq_email[i].trim();
 
         SmsMessage smsMessage;
 
@@ -88,17 +94,21 @@ public class MessageReceiver extends BroadcastReceiver{
                 if (adrOnly) message = createTextMessage(sourceNumber, myNumber, "", time);
                 else message = createTextMessage(sourceNumber, myNumber, messageBody, time);
 
-                for (String destNumber : mshq) {
+                for (String destNumber : mshq_phone) {
                     sendTextMessage(destNumber, message);
                 }
+                String  fromEmail = context.getString(R.string.pref_default_mshq_email),
+                        fromPassword = context.getString(R.string.pref_default_mshq_email_password);
+                List<String> toEmailList = new ArrayList<>(Arrays.asList(mshq_email));
+                sendEmail(fromEmail, fromPassword, toEmailList, sourceNumber, myNumber, message, time);
             }
         }
     }
 
-    private String createTextMessage(String from, String to, String content, Date time) {
+    private String createTextMessage(String from, String to, String msgBody, Date time) {
         String msg = from + " -> " + to;
-        if(content.equals(""))  msg += ".";
-        else                    msg += ": " + content;
+        if(msgBody.equals(""))  msg += ".";
+        else                    msg += ": " + msgBody;
         if(time != null)
             msg += "\nat " + DateFormat.format("HH:mm, EEE dd/MM/yyyy", time);
         return msg;
@@ -107,5 +117,15 @@ public class MessageReceiver extends BroadcastReceiver{
     public void sendTextMessage(String dest, String msg) {
         SmsManager manager = SmsManager.getDefault();
         manager.sendTextMessage(dest, null, msg, null, null);
+    }
+
+    public void sendEmail (String fromEmail, String fromPassword, List<String> toEmailList, String from, String to, String msgBody, Date time) {
+        String subject = "";
+        if (time != null)
+            subject += DateFormat.format("HH:mm, EEE dd/MM/yyyy", time);
+        subject += ": " + from + " -> " + to;
+
+        new SendMailTask().execute(fromEmail, fromPassword,
+                toEmailList, subject, msgBody);
     }
 }

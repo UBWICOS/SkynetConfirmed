@@ -253,7 +253,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("mshq_address_text"));
+            bindPreferenceSummaryToValue(findPreference("mshq_phone_address_text"));
+            bindPreferenceSummaryToValue(findPreference("mshq_email_address_text"));
         }
 
         @Override
