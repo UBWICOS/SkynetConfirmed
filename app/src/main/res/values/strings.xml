@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Skynet Confirmed</string>
 
+    <!-- Strings for Intro Slider -->
     <string name="title_activity_welcome">Home Screen</string>
     <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
@@ -19,7 +20,17 @@
     <string name="slide_4_desc">Your dog!</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Strings related to Settings -->
+    <!-- Strings for Phone Calls Settings Headers -->
+    <string name="pref_header_phone_calls">Phone Calls</string>
+    <string name="pref_header_call_specify_number">Specify phone number</string>
+    <string name="pref_header_call_phone_number">Phone number</string>
+    <string name="pref_header_call_spy_type">Spy type</string>
+    <string name="pref_header_call_frequency">Frequency</string>
+
+    <!-- Strings for Phone Calls Settings Summaries -->
+    <string name="pref_summary_call_specify_number">Spy only on specific phone numbers</string>
+    <string name="pref_summary_call_spy_type">Select type of call spying</string>
+    <string name="pref_summary_call_frequency">Select spy frequency</string>
 
     <!-- Example General settings -->
     <string name="pref_header_messages">Messages</string>
@@ -79,9 +90,6 @@
     </string-array>
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_phone_calls">Phone Calls</string>
 
     <string name="pref_title_new_message_notifications">New message notifications</string>
 

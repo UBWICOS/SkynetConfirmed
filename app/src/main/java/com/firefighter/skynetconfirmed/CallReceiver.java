@@ -3,10 +3,11 @@ package com.firefighter.skynetconfirmed;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
-import android.telephony.PhoneStateListener;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
 import java.io.File;
@@ -18,90 +19,76 @@ import java.util.Calendar;
  */
 public class CallReceiver extends BroadcastReceiver {
 
-    TelephonyManager manager;
-    private MediaRecorder recorder;
-    private boolean recording;
-    private final PhoneStateListener phoneListener = new PhoneStateListener() {
-        @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
-            switch (state) {
-                case TelephonyManager.CALL_STATE_RINGING:
-                    break;
-
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    break;
-
-                case TelephonyManager.CALL_STATE_IDLE:
-                    if (recording) {
-                        recorder.stop();
-                        recorder.reset();
-                        recorder.release();
-                        recorder = null;
-                        recording = false;
-                    }
-                    break;
-
-                default:
-                    break;
-
-            }
-        }
-    };
+    private static MediaRecorder recorder;
 
     public CallReceiver() {
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+
         Bundle extras = intent.getExtras();
-        
-        manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        manager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 
-        if (extras != null) {
-            String state = extras.getString(TelephonyManager.EXTRA_STATE);
-            assert state != null;
-            if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-                try {
-                    if (recorder == null && !recording) {
-                        Calendar calendar = Calendar.getInstance();
-                        String date = calendar.get(Calendar.DATE) + "_"
-                                + (calendar.get(Calendar.MONTH) + 1) + "_"
-                                + calendar.get(Calendar.YEAR);
-                        String time = calendar.get(Calendar.HOUR) + "_"
-                                + calendar.get(Calendar.MINUTE) + "_"
-                                + calendar.get(Calendar.SECOND);
-
-                        File file = createDirIfNotExists(date + "_" + time);
-
-                        recorder = new MediaRecorder();
-                        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                        recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-                        recorder.setOutputFile(file.getAbsolutePath());
-                        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-                    }
-                    recorder.prepare();
-                    recorder.start();
-                    recording = true;
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+        if (extras == null)
+            return;
+        String state = extras.getString(TelephonyManager.EXTRA_STATE);
+        if (state == null)
+            return;
+        if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+            String number = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
+            if (pref.getBoolean("specify_number", false)) {
+                if (number == null || pref.getString("specific_number", null) == null)
+                    return;
+                if (!number.equals(pref.getString("specific_number", null)))
+                    return;
             }
+            try {
+                if (recorder == null) {
+                    Calendar calendar = Calendar.getInstance();
+                    String date = calendar.get(Calendar.DATE) + "_"
+                            + (calendar.get(Calendar.MONTH) + 1) + "_"
+                            + calendar.get(Calendar.YEAR);
+                    String time = calendar.get(Calendar.HOUR) + "_"
+                            + calendar.get(Calendar.MINUTE) + "_"
+                            + calendar.get(Calendar.SECOND);
+
+                    String fileName = date + "_" + time + "_" + number;
+                    File file = createDirIfNotExists(fileName);
+
+                    recorder = new MediaRecorder();
+                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+                    recorder.setOutputFile(file.getAbsolutePath());
+                    recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+                }
+                recorder.prepare();
+                recorder.start();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE) && recorder != null) {
+            recorder.stop();
+            recorder.reset();
+            recorder.release();
+            recorder = null;
         }
     }
 
     private File createDirIfNotExists(String path) {
         File folder = new File(Environment.getExternalStorageDirectory()
-                + "/PhoneCallRecording");
+                + "/Recording");
 
         if (!folder.exists()) {
-            folder.mkdirs();
+            if (!folder.mkdirs())
+                System.out.println("Something happened!");
         }
 
         File file = new File(folder, path + ".3gpp");
         try {
             if (!file.exists()) {
-                file.createNewFile();
+                if (!file.createNewFile())
+                    System.out.println("Something happened!");
             }
         } catch (IOException e) {
             e.printStackTrace();

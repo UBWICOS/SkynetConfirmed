@@ -3,6 +3,11 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
+        android:fragment="com.firefighter.skynetconfirmed.SettingsActivity$CameraPreferenceFragment"
+        android:icon="@drawable/ic_photo_camera_black_24dp"
+        android:title="@string/pref_header_camera" />
+
+    <header
         android:fragment="com.firefighter.skynetconfirmed.SettingsActivity$MessagesPreferenceFragment"
         android:icon="@drawable/ic_email_black_24dp"
         android:title="@string/pref_header_messages" />
@@ -13,13 +18,7 @@
         android:title="@string/pref_header_phone_calls" />
 
     <header
-        android:fragment="com.firefighter.skynetconfirmed.SettingsActivity$CameraPreferenceFragment"
-        android:icon="@drawable/ic_photo_camera_black_24dp"
-        android:title="@string/pref_header_camera" />
-
-    <header
         android:fragment="com.firefighter.skynetconfirmed.SettingsActivity$MSHQPreferenceFragment"
         android:icon="@drawable/ic_adb_black_24dp"
         android:title="@string/pref_header_mshq" />
-
 </preference-headers>
