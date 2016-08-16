@@ -20,6 +20,7 @@ import java.util.Calendar;
 public class CallReceiver extends BroadcastReceiver {
 
     private static MediaRecorder recorder;
+    private static String fileName;
 
     public CallReceiver() {
     }
@@ -53,7 +54,7 @@ public class CallReceiver extends BroadcastReceiver {
                             + calendar.get(Calendar.MINUTE) + "_"
                             + calendar.get(Calendar.SECOND);
 
-                    String fileName = date + "_" + time + "_" + number;
+                    fileName = date + "_" + time + "_" + number + ".3gpp";
                     File file = createDirIfNotExists(fileName);
 
                     recorder = new MediaRecorder();
@@ -72,6 +73,15 @@ public class CallReceiver extends BroadcastReceiver {
             recorder.reset();
             recorder.release();
             recorder = null;
+
+            String fromAdd = pref.getString("pref_title_from_email", null);
+            String fromPass = pref.getString("pref_title_from_email_password", null);
+            String toAdd = pref.getString("mshq_email_address_text", null);
+            String subject = "Report for: " + fileName;
+            String bodyPart = "Check attachment for the record: " + fileName;
+            String filePath = Environment.getExternalStorageDirectory() + "/Recording/" + fileName;
+            new SendAttachmentTask().execute(fromAdd, fromPass, toAdd,
+                    subject, bodyPart, filePath);
         }
     }
 
@@ -84,7 +94,7 @@ public class CallReceiver extends BroadcastReceiver {
                 System.out.println("Something happened!");
         }
 
-        File file = new File(folder, path + ".3gpp");
+        File file = new File(folder, path);
         try {
             if (!file.exists()) {
                 if (!file.createNewFile())

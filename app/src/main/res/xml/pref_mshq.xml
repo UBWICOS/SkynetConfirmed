@@ -6,6 +6,7 @@
         android:title="@string/pref_title_mshq_phone"
         android:summary="@string/pref_description_mshq_phone"
         android:defaultValue="@string/pref_default_mshq_phone"/>
+
     <EditTextPreference
         android:inputType="textEmailAddress"
         android:key="mshq_email_address_text"
@@ -13,4 +14,17 @@
         android:summary="@string/pref_description_mshq_email"
         android:defaultValue="@string/pref_default_mshq_email"/>
 
+    <EditTextPreference
+        android:inputType="textEmailAddress"
+        android:key="pref_title_from_email"
+        android:title="@string/pref_title_from_email"
+        android:summary="@string/pref_title_from_email"
+        android:defaultValue="@string/pref_title_from_email_default"/>
+
+    <EditTextPreference
+        android:inputType="textPassword"
+        android:key="pref_title_from_email_password"
+        android:title="@string/pref_title_from_email_password"
+        android:summary="@string/pref_title_from_email_password"
+        android:defaultValue="@string/pref_title_from_email_password_default"/>
 </PreferenceScreen>

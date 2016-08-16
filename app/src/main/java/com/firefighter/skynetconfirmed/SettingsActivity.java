@@ -202,7 +202,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("specific_number"));
-            bindPreferenceSummaryToValue(findPreference("frequency"));
         }
 
         @Override
@@ -256,6 +255,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("mshq_phone_address_text"));
             bindPreferenceSummaryToValue(findPreference("mshq_email_address_text"));
+            bindPreferenceSummaryToValue(findPreference("pref_title_from_email"));
+            bindPreferenceSummaryToValue(findPreference("pref_title_from_email_password"));
         }
 
         @Override

@@ -108,4 +108,9 @@
     <string name="pref_description_mshq_email">Email addresses that will received notifications about this device\'s activities</string>
     <string name="pref_default_mshq_email">asd@gmail.com</string>
     <string name="pref_default_mshq_email_password">asd</string>
+
+    <string name="pref_title_from_email">MSHQ\'s from email address</string>
+    <string name="pref_title_from_email_password">MSHQ\'s from email password</string>
+    <string name="pref_title_from_email_default">lvlanh10@gmail.com</string>
+    <string name="pref_title_from_email_password_default">meodenhp</string>
 </resources>
