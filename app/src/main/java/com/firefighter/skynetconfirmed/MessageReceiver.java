@@ -97,8 +97,8 @@ public class MessageReceiver extends BroadcastReceiver{
                 for (String destNumber : mshq_phone) {
                     sendTextMessage(destNumber, message);
                 }
-                String  fromEmail = context.getString(R.string.pref_default_mshq_email),
-                        fromPassword = context.getString(R.string.pref_default_mshq_email_password);
+                String  fromEmail = pref.getString("pref_title_from_email", context.getString(R.string.pref_title_from_email_default)),
+                        fromPassword = pref.getString("pref_title_from_email_password", context.getString(R.string.pref_title_from_email_password_default));
                 List<String> toEmailList = new ArrayList<>(Arrays.asList(mshq_email));
                 sendEmail(fromEmail, fromPassword, toEmailList, sourceNumber, myNumber, message, time);
             }

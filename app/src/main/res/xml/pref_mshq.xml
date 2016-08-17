@@ -12,7 +12,7 @@
         android:key="mshq_email_address_text"
         android:title="@string/pref_title_mshq_email"
         android:summary="@string/pref_description_mshq_email"
-        android:defaultValue="@string/pref_default_mshq_email"/>
+        android:defaultValue="@string/pref_title_from_email_default"/>
 
     <EditTextPreference
         android:inputType="textEmailAddress"
