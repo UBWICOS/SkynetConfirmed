@@ -7,25 +7,4 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.firefighter.skynetconfirmed.MainActivity">
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/textView2" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Settings"
-        android:id="@+id/button"
-        android:layout_below="@+id/textView2"
-        android:layout_toEndOf="@+id/textView2"
-        android:layout_marginTop="105dp"
-        android:onClick="goToSettings" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/button"
-        android:layout_marginBottom="107dp" />
 </RelativeLayout>
