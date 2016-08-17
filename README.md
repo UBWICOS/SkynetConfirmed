@@ -1,6 +1,10 @@
-# SkynetConfirmed
-ES10901&ES20901 Submit Project
+SkynetConfirmed
+========================================================================
+ES10901&ES20901 Project
+------------------------------------------------------------------------
+A random spyware app for Android
 Project Member:
+------------------------------------------------------------------------
     DungDTSE03547
     ManhPHSE03381
     NangNDSE03524
